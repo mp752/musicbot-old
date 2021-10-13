@@ -49,6 +49,7 @@ def after_play(ctx, voice):
 
 # The function for playing garbage... or music.
 async def play(ctx, song, voice, client):
+    message = await ctx.send("Loading...")
     # Get song/video from URL
     STATUS[2] = False
     with YoutubeDL(YDL_OPTIONS) as ydl:
@@ -69,7 +70,7 @@ async def play(ctx, song, voice, client):
     STATUS[0] = url
     STATUS[1] = 1
     STATUS[3] = info['title']
-    await ctx.send("Now playing: " + STATUS[3] + "!")
+    await message.edit("Now playing: " + STATUS[3] + "!")
 
 
 async def pause(ctx, voice):
