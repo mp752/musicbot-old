@@ -70,7 +70,7 @@ async def play(ctx, song, voice, client):
     STATUS[0] = url
     STATUS[1] = 1
     STATUS[3] = info['title']
-    await message.edit("Now playing: " + STATUS[3] + "!")
+    await message.edit(content="Now playing: " + STATUS[3] + "!")
 
 
 async def pause(ctx, voice):
