@@ -4,6 +4,7 @@ attrs==20.3.0
 cffi==1.14.5
 chardet==4.0.0
 discord-interactions==0.3.0
+discord-py-slash-command==3.0.1
 discord.py==1.7.3
 idna==3.1
 multidict==5.1.0
