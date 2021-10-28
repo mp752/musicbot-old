@@ -1,11 +1,11 @@
-from discord_slash import SlashCommand
+from discord_slash import SlashCommand, ComponentContext
 from garbageplayer import garbage_player
 
 
 # Function for parsing the commands
 def listeners(client, token):
     # Guilds where this bot will work
-    guild_ids = [537261336351211528, 474158226439667712, 827623437400801280]
+    guild_ids = [537261336351211528, 474158226439667712, 827623437400801280, 757859064939282463]
     # Enable slash commands
     slash = SlashCommand(client, sync_commands=True)
 
@@ -36,6 +36,7 @@ def listeners(client, token):
     @slash.slash(name="repeat", guild_ids=guild_ids,
                  description="Toggle the current track to repeat.")
     async def _repeat(ctx):
+        ctx.is_button = False
         await garbage_player(ctx, client)
 
     # Status command
@@ -44,17 +45,46 @@ def listeners(client, token):
     async def _status(ctx):
         await garbage_player(ctx, client)
 
+    # Queue command
+    @slash.slash(name="queue", guild_ids=guild_ids,
+                 description="Get the current track queue.")
+    async def _status(ctx):
+        await garbage_player(ctx, client)
+
+    # Skip command
+    @slash.slash(name="skip", guild_ids=guild_ids,
+                 description="Skips the current track.")
+    async def _skip(ctx):
+        await garbage_player(ctx, client)
+
+    @slash.slash(name="remove", guild_ids=guild_ids,
+                 description="Remove song from queue.")
+    async def _remove(ctx, number):
+        await garbage_player(ctx, client, number)
+
     # Leave command
     @slash.slash(name="leave", guild_ids=guild_ids,
                  description="Disconnect the bot from a voice channel.")
     async def _leave(ctx):
-        # See if the bot is in a channel, if so then disconnect it
-        try:
-            await ctx.guild.voice_client.disconnect()
-            await ctx.send("lolbye")
-        # If not, then send this message
-        except AttributeError:
-            await ctx.send("I'm not in a channel, dumdum.")
+        await garbage_player(ctx, client)
+
+    @slash.component_callback()
+    async def repeat(ctx: ComponentContext):
+        ctx.command = "repeat"
+        await garbage_player(ctx, client)
+
+    @slash.component_callback()
+    async def pause(ctx: ComponentContext):
+        ctx.command = "pause"
+        await garbage_player(ctx, client)
+
+    @slash.component_callback()
+    async def resume(ctx: ComponentContext):
+        ctx.command = "resume"
+        await garbage_player(ctx, client)
+
+
 
     # Run the client with the needed token
+
     client.run(token)
