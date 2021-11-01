@@ -38,6 +38,7 @@ async def garbage_player(ctx, client, argument=""):
 
     if ctx.author.id == 134067571614941185:
         await ctx.send("You ruined the last bot, you aren't going to fuck this up >:(")
+        return
 
     if not ctx.author.voice:
         await ctx.send("User is not in a channel.")
