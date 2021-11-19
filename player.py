@@ -267,6 +267,6 @@ def cleanup(ctx, servers):
     servers[ctx.guild.id]["track_url"] = ""
     servers[ctx.guild.id]["track_name"] = ""
     servers[ctx.guild.id]["thumbnail"] = ""
-    servers[ctx.guild.id]["queue"] = ""
+    servers[ctx.guild.id]["queue"] = []
     servers[ctx.guild.id]["repeat"] = False
     print("Cleaned up " + ctx.guild.name)
