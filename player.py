@@ -8,6 +8,8 @@ from youtube_dl import YoutubeDL
 from youtube_dl.utils import DownloadError
 
 # Options for both the youtube downloader and ffmpeg
+MAINTENANCE = False
+
 YDL_OPTIONS = {'format': 'worstaudio', 'noplaylist': 'True', 'youtube_include_dash_manifest': False,
                'default_search': 'ytsearch'}
 FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
@@ -36,6 +38,13 @@ action_row = create_actionrow(*BUTTONS)
 
 async def garbage_player(ctx, client, argument=""):
 
+    global SERVERS
+    global MAINTENANCE
+
+    if MAINTENANCE and not ctx.author.id == 123646058340417537:
+        await ctx.send("Bot is in maintenance mode.")
+        return
+
     if ctx.author.id == 134067571614941185:
         await ctx.send("You ruined the last bot, you aren't going to fuck this up >:(")
         return
@@ -47,7 +56,6 @@ async def garbage_player(ctx, client, argument=""):
         await ctx.send("You are not in a bot channel.")
         return
 
-    global SERVERS
     if ctx.guild.id not in SERVERS.keys():
         SERVERS[ctx.guild.id] = {
             "track_url": "",
@@ -87,6 +95,21 @@ async def garbage_player(ctx, client, argument=""):
 
     if ctx.command == "remove":
         await remove(ctx, SERVERS, argument)
+
+    if ctx.command == "maintenance":
+        if MAINTENANCE:
+            MAINTENANCE = False
+            await ctx.send("Bot is no longer in maintenance mode.")
+        elif not MAINTENANCE:
+            MAINTENANCE = True
+            await ctx.send("Bot is now in maintenance mode.")
+
+
+
+    @client.event
+    async def on_voice_state_update(member, before, after):
+        if member.id == 888251650014326814 and not after.channel:
+            cleanup(member, SERVERS)
 
 
 def after_play(ctx, voice, servers):
@@ -233,7 +256,17 @@ async def status(ctx, client, servers):
 async def remove(ctx, servers, song):
     current_queue = servers[ctx.guild.id]["queue"]
     try:
-        removed_song = current_queue.pop(int(song)-1)[1]
+        removed_song = current_queue.pop(int(song) - 1)[1]
         await ctx.send("Removed " + removed_song + " from the queue.")
     except IndexError:
         await ctx.send("Track number not in queue.")
+
+
+def cleanup(ctx, servers):
+    servers[ctx.guild.id]["status"] = "Stopped"
+    servers[ctx.guild.id]["track_url"] = ""
+    servers[ctx.guild.id]["track_name"] = ""
+    servers[ctx.guild.id]["thumbnail"] = ""
+    servers[ctx.guild.id]["queue"] = ""
+    servers[ctx.guild.id]["repeat"] = False
+    print("Cleaned up " + ctx.guild.name)

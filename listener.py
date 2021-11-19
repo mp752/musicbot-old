@@ -1,7 +1,6 @@
 from discord_slash import SlashCommand, ComponentContext
 from player import garbage_player
 
-
 # Function for parsing the commands
 def listeners(client, token):
     # Guilds where this bot will work
@@ -48,7 +47,7 @@ def listeners(client, token):
     # Queue command
     @slash.slash(name="queue", guild_ids=guild_ids,
                  description="Get the current track queue.")
-    async def _status(ctx):
+    async def _queue(ctx):
         await garbage_player(ctx, client)
 
     # Skip command
@@ -68,6 +67,16 @@ def listeners(client, token):
     async def _leave(ctx):
         await garbage_player(ctx, client)
 
+    # Leave command
+    @slash.slash(name="maintenance", guild_ids=guild_ids,
+                 description="Allows the bot admin to put the bot in maintenance mode.")
+    async def _maintenance(ctx):
+        if ctx.author.id == 123646058340417537:
+            await garbage_player(ctx, client)
+        else:
+            await ctx.send("Bruh...")
+
+
     @slash.component_callback()
     async def repeat(ctx: ComponentContext):
         ctx.command = "repeat"
@@ -82,8 +91,6 @@ def listeners(client, token):
     async def resume(ctx: ComponentContext):
         ctx.command = "resume"
         await garbage_player(ctx, client)
-
-
 
     # Run the client with the needed token
 
