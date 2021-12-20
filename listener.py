@@ -1,10 +1,12 @@
 from discord_slash import SlashCommand, ComponentContext
 from player import garbage_player
 
+
 # Function for parsing the commands
 def listeners(client, token):
     # Guilds where this bot will work
-    guild_ids = [537261336351211528, 474158226439667712, 827623437400801280, 757859064939282463, 846060380597125122]
+    guild_ids = [537261336351211528, 474158226439667712, 827623437400801280, 757859064939282463, 846060380597125122,
+                 876163978097741840]
     # Enable slash commands
     slash = SlashCommand(client, sync_commands=True)
 
@@ -75,7 +77,6 @@ def listeners(client, token):
             await garbage_player(ctx, client)
         else:
             await ctx.send("Bruh...")
-
 
     @slash.component_callback()
     async def repeat(ctx: ComponentContext):
